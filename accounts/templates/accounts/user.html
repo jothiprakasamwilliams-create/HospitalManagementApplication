@@ -1,0 +1,345 @@
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+
+<style>
+    .patient-view-wrapper {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .patient-view-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .welcome-header {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .welcome-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 10px 0;
+    }
+
+    .welcome-header p {
+        color: #64748b;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header-custom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .card-title-custom {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .icon-appointment {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .icon-diagnosis {
+        background: linear-gradient(135deg, #7CD1C0, #5fb8a8);
+        color: white;
+    }
+
+    .icon-checkup {
+        background: linear-gradient(135deg, #7abecc, #5fa8b8);
+        color: white;
+    }
+
+    .appointment-info {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 12px;
+    }
+
+    .appointment-info div {
+        flex: 1;
+    }
+
+    .appointment-label {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .appointment-value {
+        font-size: 18px;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .modern-table thead {
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    }
+
+    .modern-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .modern-table th:first-child {
+        border-radius: 10px 0 0 0;
+    }
+
+    .modern-table th:last-child {
+        border-radius: 0 10px 0 0;
+    }
+
+    .modern-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .modern-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .modern-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .print-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        padding: 16px 32px;
+        background: linear-gradient(135deg, #7abecc, #5fa8b8);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(122, 190, 204, 0.4);
+        transition: all 0.3s ease;
+        z-index: 100;
+    }
+
+    .print-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(122, 190, 204, 0.5);
+    }
+
+    @media print {
+        .patient-view-wrapper {
+            background: white;
+            padding: 0;
+        }
+
+        .print-button {
+            display: none;
+        }
+
+        .info-card {
+            box-shadow: none;
+            page-break-inside: avoid;
+        }
+
+        .welcome-header {
+            box-shadow: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .appointment-info {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .print-button {
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="patient-view-wrapper">
+    <div class="patient-view-container">
+        
+        <div class="welcome-header">
+            <h1>Welcome, {{ patient.name }} {{ patient.surname }}</h1>
+            <p>View your medical records and upcoming appointments</p>
+        </div>
+
+        <div class="info-card">
+            <div class="card-header-custom">
+                <h2 class="card-title-custom">
+                    <div class="card-icon icon-appointment">📅</div>
+                    Next Appointment
+                </h2>
+            </div>
+            {% if next_app %}
+                {% for i in next_app %}
+                <div class="appointment-info">
+                    <div>
+                        <div class="appointment-label">Date & Time</div>
+                        <div class="appointment-value">{{ i.date }}</div>
+                    </div>
+                    <div>
+                        <div class="appointment-label">Doctor</div>
+                        <div class="appointment-value">{{ i.staff.name }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">No upcoming appointments scheduled</div>
+            {% endif %}
+        </div>
+
+        <div class="info-card">
+            <div class="card-header-custom">
+                <h2 class="card-title-custom">
+                    <div class="card-icon icon-diagnosis">🩺</div>
+                    Diagnosis History
+                </h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Diagnosis</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Treatment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entery in diag %}
+                        <tr>
+                            <td>{{ entery.diagnosis }}</td>
+                            <td>{{ entery.doctor.name }}</td>
+                            <td>{{ entery.date }}</td>
+                            <td>{{ entery.treatment }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No diagnosis records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="card-header-custom">
+                <h2 class="card-title-custom">
+                    <div class="card-icon icon-checkup">💉</div>
+                    Check-Up History
+                </h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Nurse</th>
+                            <th>Urgency</th>
+                            <th>Heart Rate</th>
+                            <th>Blood Pressure</th>
+                            <th>Temperature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in check_up %}
+                        <tr>
+                            <td>{{ i.date }}</td>
+                            <td>{{ i.nurse.name }}</td>
+                            <td>{{ i.urgency }}</td>
+                            <td>{{ i.heart_rate }}</td>
+                            <td>{{ i.blood_presure }}</td>
+                            <td>{{ i.temperature }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="empty-state">No check-up records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="print-button not-printable" onclick="window.print()">🖨️ Print Records</button>
+</div>
+
+{% endblock %}

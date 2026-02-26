@@ -1,0 +1,185 @@
+{% load static %}
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  .navbar-container {
+    background: #ffffff;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+  }
+
+  .navbar {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    gap: 30px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .logo {
+    height: 45px;
+    width: auto;
+    margin-left: 40px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+  }
+
+  .nav-link {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: #7abecc;
+    background: rgba(122, 190, 204, 0.1);
+  }
+
+  .nav-link.active {
+    color: #7abecc;
+    background: rgba(122, 190, 204, 0.15);
+  }
+
+  .navbar-spacer {
+    flex: 1;
+  }
+
+  .user-dropdown {
+    position: relative;
+    margin-right: 40px;
+  }
+
+  .user-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7abecc 0%, #6db8c9 100%);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(122, 190, 204, 0.25);
+    transition: all 0.3s ease;
+  }
+
+  .user-icon:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(122, 190, 204, 0.35);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    min-width: 220px;
+    padding: 10px;
+    display: none;
+  }
+
+  .dropdown-menu.show {
+    display: block;
+  }
+
+  .user-email {
+    padding: 12px 15px;
+    color: #2c3e50;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid #f0f0f0;
+    word-break: break-word;
+  }
+
+  .btn-logout {
+    width: 100%;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.25);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+    color: white;
+    text-decoration: none;
+  }
+</style>
+
+<div class="navbar-container">
+  <nav class="navbar">
+    <a href="{% url 'home' %}">
+      <img src="{% static 'images/logo.png' %}" class="logo" alt="MedBook">
+    </a>
+
+    {% if request.user.groups.all.0.name == 'Nurse' or request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Admin' %}
+    <ul class="nav-links">
+      <li><a class="nav-link active" href="{% url 'home' %}">Dashboard</a></li>
+      {% if request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Admin' %}
+      <li><a class="nav-link" href="{% url 'new_appointment' %}">Create Appointment</a></li>
+      {% endif %}
+    </ul>
+    {% endif %}
+
+    <div class="navbar-spacer"></div>
+
+    <div class="user-dropdown">
+      <button class="user-icon" onclick="toggleDropdown()">
+        {{ request.user.username|slice:":1"|upper }}
+      </button>
+      <div class="dropdown-menu" id="userDropdown">
+        <div class="user-email">{{ request.user.email|default:request.user.username }}</div>
+        <a class="btn-logout" href="{% url 'logout' %}">Logout</a>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<script>
+  function toggleDropdown() {
+    document.getElementById('userDropdown').classList.toggle('show');
+  }
+
+  document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('userDropdown');
+    const userIcon = event.target.closest('.user-icon');
+    
+    if (!userIcon && !dropdown.contains(event.target)) {
+      dropdown.classList.remove('show');
+    }
+  });
+</script>

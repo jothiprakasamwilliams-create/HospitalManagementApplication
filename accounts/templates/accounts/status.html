@@ -1,0 +1,104 @@
+{% load static %}
+<style>
+    .stats-container {
+        padding: 30px 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    .stats-row {
+        display: flex;
+        gap: 25px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 30px;
+    }
+
+    .stat-card {
+        flex: 1;
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--card-color-1), var(--card-color-2));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card.patients {
+        --card-color-1: #4cb4c7;
+        --card-color-2: #3a9db0;
+    }
+
+    .stat-card.nurses {
+        --card-color-1: #7abecc;
+        --card-color-2: #5fa8b8;
+    }
+
+    .stat-card.doctors {
+        --card-color-1: #7CD1C0;
+        --card-color-2: #5fb8a8;
+    }
+
+    .stat-header {
+        font-size: 16px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+    }
+
+    .stat-number {
+        font-size: 48px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--card-color-1), var(--card-color-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+    }
+
+    .stat-icon {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 60px;
+        opacity: 0.1;
+    }
+</style>
+
+<div class="stats-container">
+    <div class="stats-row">
+        <div class="stat-card patients">
+            <div class="stat-icon">👥</div>
+            <div class="stat-header">Patients</div>
+            <div class="stat-number">{{ count_patients }}</div>
+        </div>
+        <div class="stat-card nurses">
+            <div class="stat-icon">💉</div>
+            <div class="stat-header">Nurses</div>
+            <div class="stat-number">{{ count_n_staff }}</div>
+        </div>
+        <div class="stat-card doctors">
+            <div class="stat-icon">⚕️</div>
+            <div class="stat-header">Doctors</div>
+            <div class="stat-number">{{ count_d_staff }}</div>
+        </div>
+    </div>
+</div>

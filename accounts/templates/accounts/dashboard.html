@@ -1,0 +1,415 @@
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+
+<style>
+    .dashboard-wrapper {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding-bottom: 50px;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 30px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-title::before {
+        content: '';
+        width: 4px;
+        height: 28px;
+        background: linear-gradient(135deg, #7abecc, #5fa8b8);
+        border-radius: 2px;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .search-card form {
+        display: flex;
+        gap: 15px;
+        align-items: flex-end;
+    }
+
+    .search-card input,
+    .search-card select {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .search-card input:focus,
+    .search-card select:focus {
+        outline: none;
+        border-color: #7abecc;
+        box-shadow: 0 0 0 3px rgba(122, 190, 204, 0.1);
+    }
+
+    .btn-search {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #7abecc, #6db8c9);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(122, 190, 204, 0.3);
+    }
+
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(122, 190, 204, 0.4);
+    }
+
+    .data-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 40px;
+    }
+
+    .btn-add {
+        padding: 12px 28px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        margin-top: 20px;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .modern-table thead {
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    }
+
+    .modern-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .modern-table th:first-child {
+        border-radius: 10px 0 0 0;
+    }
+
+    .modern-table th:last-child {
+        border-radius: 0 10px 0 0;
+    }
+
+    .modern-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .modern-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .modern-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .btn-table {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #7abecc, #6db8c9);
+        color: white;
+        box-shadow: 0 2px 8px rgba(122, 190, 204, 0.3);
+    }
+
+    .btn-view:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(122, 190, 204, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-doctor {
+        background: linear-gradient(135deg, #7CD1C0, #5fb8a8);
+        color: white;
+    }
+
+    .badge-nurse {
+        background: linear-gradient(135deg, #7abecc, #5fa8b8);
+        color: white;
+    }
+
+    .badge-receptionist {
+        background: linear-gradient(135deg, #4cb4c7, #3a9db0);
+        color: white;
+    }
+
+    .dept-badge {
+        padding: 5px 12px;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .modern-table tbody tr td:nth-child(2) {
+        font-weight: 600;
+        color: #1e293b;
+    }
+</style>
+
+{% include 'accounts/status.html' %}
+
+<div class="dashboard-wrapper">
+    <div class="dashboard-container">
+        
+        <div class="section-header">
+            <h2 class="section-title">Patients</h2>
+            {% if request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Admin' %}
+            <a class="btn-add" href="{% url 'create_patient' %}">+ Add Patient</a>
+            {% endif %}
+        </div>
+
+        <div class="search-card">
+            <form method="get">
+                {{ patient_fil.form }}
+                <button class="btn-search" type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="data-card">
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Gender</th>
+                            <th>Birthday</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            {% if request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Admin' %}
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td><a class="btn-table btn-view" href="{% url 'patient' patient.id %}">{{ patient }}</a></td>
+                            <td>{{ patient.name }}</td>
+                            <td>{{ patient.surname }}</td>
+                            <td>{{ patient.gender }}</td>
+                            <td>{{ patient.birthday }}</td>
+                            <td>{{ patient.address }}</td>
+                            <td>{{ patient.email }}</td>
+                            <td>{{ patient.number }}</td>
+                            {% if request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Admin' %}
+                            <td><a class="btn-table btn-update" href="{% url 'update_patient' patient.id %}">Update</a></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Doctors</h2>
+        </div>
+
+        <div class="data-card">
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Gender</th>
+                            <th>Birthday</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in d_staff %}
+                        <tr>
+                            <td><span class="badge badge-doctor">{{ member }}</span></td>
+                            <td><strong>{{ member.name }}</strong></td>
+                            <td>{{ member.surname }}</td>
+                            <td>{{ member.gender }}</td>
+                            <td>{{ member.birthday }}</td>
+                            <td>{{ member.address }}</td>
+                            <td>{{ member.email }}</td>
+                            <td><span class="dept-badge">{{ member.department }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Nurses</h2>
+        </div>
+
+        <div class="data-card">
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Gender</th>
+                            <th>Birthday</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in n_staff %}
+                        <tr>
+                            <td><span class="badge badge-nurse">{{ member }}</span></td>
+                            <td><strong>{{ member.name }}</strong></td>
+                            <td>{{ member.surname }}</td>
+                            <td>{{ member.gender }}</td>
+                            <td>{{ member.birthday }}</td>
+                            <td>{{ member.address }}</td>
+                            <td>{{ member.email }}</td>
+                            <td><span class="dept-badge">{{ member.department }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Receptionists</h2>
+        </div>
+
+        <div class="data-card">
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Gender</th>
+                            <th>Birthday</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in r_staff %}
+                        <tr>
+                            <td><span class="badge badge-receptionist">{{ member }}</span></td>
+                            <td><strong>{{ member.name }}</strong></td>
+                            <td>{{ member.surname }}</td>
+                            <td>{{ member.gender }}</td>
+                            <td>{{ member.birthday }}</td>
+                            <td>{{ member.address }}</td>
+                            <td>{{ member.email }}</td>
+                            <td><span class="dept-badge">{{ member.department }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+

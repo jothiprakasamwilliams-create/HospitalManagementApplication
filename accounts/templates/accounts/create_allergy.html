@@ -1,0 +1,262 @@
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .form-wrapper {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        padding: 40px;
+        color: white;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .form-header p {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 15px;
+    }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 12px;
+        font-size: 16px;
+        display: block;
+    }
+
+    .form-group select {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        cursor: pointer;
+        background: white;
+    }
+
+    .form-group select:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+    }
+
+    .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        background: #f8f9fa;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .checkbox-item:hover {
+        background: #fff7ed;
+        border-color: #fed7aa;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        cursor: pointer;
+        accent-color: #f59e0b;
+    }
+
+    .checkbox-item input[type="checkbox"]:checked + label {
+        color: #d97706;
+        font-weight: 600;
+    }
+
+    .checkbox-item label {
+        cursor: pointer;
+        margin: 0;
+        font-size: 14px;
+        color: #475569;
+        flex: 1;
+    }
+
+    .allergy-section {
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 2px solid #f1f5f9;
+    }
+
+    .btn-submit {
+        flex: 1;
+        padding: 14px 32px;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-cancel {
+        padding: 14px 32px;
+        background: #f1f5f9;
+        color: #475569;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #475569;
+        text-decoration: none;
+    }
+
+    .required-indicator {
+        color: #ef4444;
+        margin-left: 4px;
+    }
+
+    /* Custom checkbox styling */
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul li {
+        display: inline-block;
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .checkbox-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-header {
+            padding: 30px 25px;
+        }
+
+        .form-body {
+            padding: 30px 25px;
+        }
+    }
+</style>
+
+<div class="form-wrapper">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Register Allergies</h2>
+            <p>Select all allergies that apply to this patient</p>
+        </div>
+
+        <div class="form-body">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                            {% if field.field.required %}
+                                <span class="required-indicator">*</span>
+                            {% endif %}
+                        </label>
+                        
+                        {% if field.name == 'allergy' %}
+                            <div class="allergy-section">
+                                <div class="checkbox-grid">
+                                    {% for choice in field %}
+                                        <div class="checkbox-item">
+                                            {{ choice.tag }}
+                                            <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            <span style="color: #ef4444; font-size: 13px; margin-top: 5px; display: block;">{{ field.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Save Allergies</button>
+                    <a href="javascript:history.back()" class="btn-cancel">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

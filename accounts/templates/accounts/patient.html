@@ -1,0 +1,513 @@
+{% extends 'accounts/main.html' %}
+
+{% block content%}
+
+<style>
+    .patient-wrapper {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .patient-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .info-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .icon-patient {
+        background: linear-gradient(135deg, #7abecc, #6db8c9);
+        color: white;
+    }
+
+    .icon-allergy {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+
+    .icon-appointment {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .info-item {
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #1e293b;
+        min-width: 80px;
+    }
+
+    .allergy-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .allergy-tag {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-card {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #7abecc, #6db8c9);
+        color: white;
+        box-shadow: 0 4px 15px rgba(122, 190, 204, 0.3);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(122, 190, 204, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-success-custom {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-warning-custom {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-warning-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+    }
+
+    .search-card form {
+        display: flex;
+        gap: 15px;
+        align-items: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .search-card input,
+    .search-card select {
+        flex: 1;
+        min-width: 150px;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .search-card input[type="date"] {
+        cursor: pointer;
+    }
+
+    .search-card input:focus,
+    .search-card select:focus {
+        outline: none;
+        border-color: #7abecc;
+        box-shadow: 0 0 0 3px rgba(122, 190, 204, 0.1);
+    }
+
+    .btn-search {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #7abecc, #6db8c9);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(122, 190, 204, 0.3);
+    }
+
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(122, 190, 204, 0.4);
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .btn-add {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        text-decoration: none;
+    }
+
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .modern-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .modern-table thead {
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    }
+
+    .modern-table th {
+        padding: 16px 20px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .modern-table th:first-child {
+        border-radius: 10px 0 0 0;
+    }
+
+    .modern-table th:last-child {
+        border-radius: 0 10px 0 0;
+    }
+
+    .modern-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .modern-table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .modern-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .btn-table {
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        background: linear-gradient(135deg, #7abecc, #6db8c9);
+        color: white;
+        box-shadow: 0 2px 8px rgba(122, 190, 204, 0.3);
+    }
+
+    .btn-table:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(122, 190, 204, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+</style>
+
+<div class="patient-wrapper">
+    <div class="patient-container">
+        
+        <div class="page-header">
+            <h1 class="page-title">Patient Profile</h1>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">Patient Information</h3>
+                    <div class="card-icon icon-patient">👤</div>
+                </div>
+                <ul class="info-list">
+                    <li class="info-item"><span class="info-label">ID:</span> {{ patient }}</li>
+                    <li class="info-item"><span class="info-label">Name:</span> {{ patient.name }}</li>
+                    <li class="info-item"><span class="info-label">Surname:</span> {{ patient.surname }}</li>
+                    <li class="info-item"><span class="info-label">Email:</span> {{ patient.email }}</li>
+                    <li class="info-item"><span class="info-label">Phone:</span> {{ patient.number }}</li>
+                </ul>
+                {% if request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Admin' %}
+                <a class="btn-card btn-primary-custom" href="{% url 'update_patient' patient.id %}">Update Information</a>
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">Allergies</h3>
+                    <div class="card-icon icon-allergy">⚠️</div>
+                </div>
+                {% if allergies_of_patient %}
+                <ul class="allergy-list">
+                    {% for al in allergies_of_patient %}
+                    <li class="allergy-tag">{{ al }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="empty-state">No allergies recorded</p>
+                {% endif %}
+                {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Nurse' or request.user.groups.all.0.name == 'Admin' %}
+                {% if allergy_entry %}
+                <a class="btn-card btn-warning-custom" href="{% url 'update_allergy' allergy_entry.id patient.id %}">Update Allergies</a>
+                {% else %}
+                <a class="btn-card btn-warning-custom" href="{% url 'create_allergy' patient.id %}">Register Allergies</a>
+                {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">Next Appointment</h3>
+                    <div class="card-icon icon-appointment">📅</div>
+                </div>
+                {% if next_appointment %}
+                <ul class="info-list">
+                    <li class="info-item"><span class="info-label">Date:</span> {{ next_appointment.date }}</li>
+                    <li class="info-item"><span class="info-label">Doctor:</span> {{ next_appointment.staff.name }}</li>
+                </ul>
+                {% else %}
+                <p class="empty-state">No upcoming appointments</p>
+                {% endif %}
+                {% if request.user.groups.all.0.name == 'Receptionist' or request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Admin' %}
+                <a class="btn-card btn-success-custom" href="{% url 'new_appointment' %}">Schedule Appointment</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="search-card">
+            <form method="get">
+                {{ myFilter.form }}
+                <button class="btn-search" type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">Diagnosis History</h2>
+                {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Admin' %}
+                <a class="btn-add" href="{% url 'create_diagnosis' patient.id %}">+ Add Diagnosis</a>
+                {% endif %}
+            </div>
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Diagnosis</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Treatment</th>
+                            {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Admin' %}
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entery in diag %}
+                        <tr>
+                            <td>{{ entery.diagnosis }}</td>
+                            <td>{{ entery.doctor.name }}</td>
+                            <td>{{ entery.date }}</td>
+                            <td>{{ entery.treatment }}</td>
+                            {% if request.user.groups.all.0.name == 'Doctor' or request.user.groups.all.0.name == 'Admin' %}
+                            <td><a class="btn-table" href="{% url 'update_diagnosis' entery.id %}">Update</a></td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-state">No diagnosis records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">Check-Up History</h2>
+                {% if request.user.groups.all.0.name == 'Nurse' or request.user.groups.all.0.name == 'Admin' %}
+                <a class="btn-add" href="{% url 'add_check_up' patient.id %}">+ Add Check-Up</a>
+                {% endif %}
+            </div>
+            <div class="table-wrapper">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Nurse</th>
+                            <th>Urgency</th>
+                            <th>Heart Rate</th>
+                            <th>Blood Pressure</th>
+                            <th>Temperature</th>
+                            {% if request.user.groups.all.0.name == 'Nurse' or request.user.groups.all.0.name == 'Admin' %}
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in check_up %}
+                        <tr>
+                            <td>{{ i.date }}</td>
+                            <td>{{ i.nurse.name }}</td>
+                            <td>{{ i.urgency }}</td>
+                            <td>{{ i.heart_rate }}</td>
+                            <td>{{ i.blood_presure }}</td>
+                            <td>{{ i.temperature }}</td>
+                            {% if request.user.groups.all.0.name == 'Nurse' or request.user.groups.all.0.name == 'Admin' %}
+                            <td><a class="btn-table" href="{% url 'update_checkup' i.id %}">Update</a></td>
+                            {% endif %}
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-state">No check-up records found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
